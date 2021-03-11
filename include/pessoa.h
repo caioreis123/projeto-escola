@@ -23,16 +23,15 @@ typedef struct pessoa{
 	char nome[TAM_NOME];
 	char cpf[TAM_CPF];
 	char sexo;
-	int ativo;
 } Pessoa;
 
 int menu_Pessoa();
 
 int menuListar_Pessoa();
 
-int criar_Pessoa(Pessoa* pessoa, int ativo);
+int criar_Pessoa(Pessoa* pessoa);
 
-int desativar_Pessoa(Pessoa lista[], int quantidade);
+int deletar_Pessoa(Pessoa lista[], int quantidade);
 
 void printarMensagemDeErro_Pessoa(int codigo);
 
@@ -42,7 +41,7 @@ void listar_Pessoa(Pessoa lista[], int quantidade);
 
 void ordenarListaPorNome_Pessoa(Pessoa lista[], int max);
 
-int filtrarAtivos_Pessoa(Pessoa listaIn[], int quantidadeIn, Pessoa listaOut[]);
+void ordenarListaPorData_Pessoa(Pessoa lista[], int max);
 
 int filtrarPorSexo_Pessoa(Pessoa listaIn[], int quantidadeIn, char sexo, Pessoa listaOut[]);
 
@@ -51,5 +50,7 @@ int filtrarPorNome_Pessoa(Pessoa listaIn[], int quantidadeIn, char busca[TAM_NOM
 int filtrarAniversariantes_Pessoa(Pessoa listaIn[], int quantidadeIn, int mes, Pessoa listaOut[]);
 
 int procurarPorMatricula_Pessoa(Pessoa lista[], int quantidade, int matricula);
+
+void copiarLista_Pessoa(Pessoa listaIn[], int quantidadeIn, Pessoa listaOut[]);
 
 #endif

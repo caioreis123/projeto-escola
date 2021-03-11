@@ -27,9 +27,10 @@ void main(){
 
 	int opcaoPrincipal, opcaoAluno, opcaoProfessor, opcaoDisciplina = 0;
 	int voltarAluno, voltarProfessor, voltarDisciplina;
-	int retornoAluno, retornoProfessor, retornoDisciplina; 
+	int retornoAluno, retornoProfessor, retornoDisciplina;
 
-	while(!sair){
+	while (!sair)
+	{
 
 		opcaoPrincipal = menu_Principal();
 
@@ -47,7 +48,7 @@ void main(){
 					switch(opcaoAluno){
 						case 1:{
 							if(qtd_aluno + 1 <= TAM_LISTA_ALUNO){
-								retornoAluno = criar_Pessoa(&lista_aluno[qtd_aluno], 1);
+								retornoAluno = criar_Pessoa(&lista_aluno[qtd_aluno]);
 								if(retornoAluno == SUCESSO_CADASTRO){
 									printf("\nCadastro Realizado com Sucesso\n");
 									qtd_aluno++;
@@ -56,7 +57,7 @@ void main(){
 								}
 							}
 							else{
-								printf("\nLimite de alunos alcançado\n");
+								printf("\nLimite de alunos alcancado\n");
 							}
 							break;
 						}
@@ -65,9 +66,11 @@ void main(){
 							break;
 						}
 						case 3:{
-							retornoAluno = desativar_Pessoa(lista_aluno, qtd_aluno);
-							if(retornoAluno == SUCESSO_DESATIVAR)
+							retornoAluno = deletar_Pessoa(lista_aluno, qtd_aluno);
+							if(retornoAluno == SUCESSO_DESATIVAR){
+								qtd_aluno--;
 								printf("\nAluno deletado com Sucesso\n");
+							}
 							else
 								printarMensagemDeErro_Pessoa(retornoAluno);
 							break;
@@ -106,7 +109,7 @@ void main(){
 					switch(opcaoProfessor){
 						case 1:{
 							if(qtd_professor + 1 <= TAM_LISTA_PROFESSOR){
-								retornoProfessor = criar_Pessoa(&lista_professor[qtd_professor], 1);
+								retornoProfessor = criar_Pessoa(&lista_professor[qtd_professor]);
 								if(retornoProfessor == SUCESSO_CADASTRO){
 									printf("\nCadastro Realizado com Sucesso\n");
 									qtd_professor++;
@@ -115,7 +118,7 @@ void main(){
 								}
 							}
 							else{
-								printf("\nLimite de professores alcançado\n");
+								printf("\nLimite de professores alcancado\n");
 							}
 							break;
 						}
@@ -124,9 +127,11 @@ void main(){
 							break;
 						}
 						case 3:{
-							retornoProfessor = desativar_Pessoa(lista_professor, qtd_professor);
-							if(retornoProfessor == SUCESSO_DESATIVAR)
+							retornoProfessor = deletar_Pessoa(lista_professor, qtd_professor);
+							if(retornoProfessor == SUCESSO_DESATIVAR){
+								qtd_professor--;
 								printf("\nProfessor deletado com Sucesso\n");
+							}
 							else
 								printarMensagemDeErro_Pessoa(retornoProfessor);
 							break;
@@ -165,38 +170,57 @@ void main(){
 
 					switch(opcaoDisciplina){
 						case 1:{
-							
-							retornoDisciplina = inserir_Disciplina(lista_disciplina, lista_professor, qtd_disciplina, qtd_professor);
+							retornoDisciplina = criar_Disciplina(&lista_disciplina[qtd_disciplina], lista_professor, qtd_professor);
 							if(retornoDisciplina == SUCESSO_CADASTRO){
 								printf("\nCadastro Realizado Com Sucesso\n");
 								qtd_disciplina++;
-
 							}else{
-								switch(retornoDisciplina){
-									case ERRO_CADASTRO_MATRICULA:{
-										printf("Matricula Invalida\n");
-										break;
-									}
-									case PROFESSOR_NAO_ENCONTRADO:{
-										printf("Professor Nao Encontrado\n");
-										break;
-									}
-
-									default:{
-										printf("Erro Desconhecido\n");
-										break;
-									}
-								}
-								printf("Nao foi possivel fazer o Cadastro\n");
-
+								printarMensagemDeErro_Disciplina(retornoDisciplina);
 							}
 							break;
 						}
 						case 2:{
-							listar_Disciplina(lista_disciplina, qtd_disciplina);
+							listar_Disciplina(lista_disciplina, qtd_disciplina, lista_professor, qtd_professor);
 							break;
 						}
+						case 3:{
+							retornoDisciplina = matricularAlunos(lista_disciplina, qtd_disciplina, lista_aluno, qtd_aluno);
+							if (retornoDisciplina == SUCESSO_CADASTRO)
+								printf("Aluno matriculado com sucesso!\n");
+							else
+								printf("Matricula não realizada. Por favor, tente novamente\n");
+							break;
+						}
+						case 4:{
+							retornoDisciplina = desmatricularAluno(lista_disciplina, qtd_disciplina, lista_aluno, qtd_aluno);
+							if (retornoDisciplina == SUCESSO_CADASTRO)
+								printf("Desmatricula realizada com sucesso\n");
+							else
+								printf("Por favor, tente novamente\n");
+						}
 						case 5:{
+							listarMatriculados(lista_disciplina, qtd_disciplina);
+							break;
+						}
+						case 6:{
+							retornoDisciplina = remover_Disciplina(lista_disciplina, qtd_disciplina);
+							if (retornoDisciplina == SUCESSO_CADASTRO){
+								qtd_disciplina--;
+								printf("Disciplina removida com sucesso\n");
+							}
+							else
+								printf("Por favor, tente novamente\n");
+							break;
+						}
+						case 7:{
+							retornoDisciplina = editar_Disciplina(lista_disciplina, qtd_disciplina, lista_professor, qtd_professor);
+							if(retornoDisciplina == SUCESSO_EDITAR)
+								printf("\nDisciplina editada com Sucesso\n");
+							else
+								printarMensagemDeErro_Disciplina(retornoDisciplina);
+							break;
+						}
+						case 8:{
 							limparTela();
 							voltarDisciplina = 1;
 							break;
@@ -206,11 +230,9 @@ void main(){
 							break;
 						}
 					}
-
 				}
 				break;
 			}
-
 			case 4:{
 				printf("\nEncerrando Sistema\n");
 				sair = 1;
@@ -235,7 +257,8 @@ int menu_Principal(){
 	printf("4 - Sair\n\n");
 
 	printf("Digite a sua opcao\n");
-	scanf("%d",&opcao_principal);
+	scanf("%d", &opcao_principal);
+	limpaBuffer();
 
 	return opcao_principal;
 }
